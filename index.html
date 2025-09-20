@@ -29,8 +29,20 @@
 <body class="min-h-screen bg-slate-900 text-slate-100">
   <header class="border-b border-slate-800/60 sticky top-0 z-20 backdrop-blur bg-slate-900/80">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-2"><span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/20">🎮</span><span class="font-bold text-lg">Freegames<span class="text-indigo-400">.gr</span></span></div>
-      <nav class="hidden sm:flex items-center gap-4 text-sm text-slate-300"><span class="text-white">Τέτρις</span><span class="opacity-60">Φιδάκι (σύντομα)</span><span class="opacity-60">2048 (σύντομα)</span></nav>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/20">🎮</span>
+        <span class="font-bold text-lg">Freegames<span class="text-indigo-400">.gr</span></span>
+      </div>
+      <div class="flex items-center gap-2">
+        <nav class="hidden sm:flex items-center gap-2 text-sm">
+          <a href="#" class="px-4 py-1.5 rounded-full font-semibold bg-indigo-600 text-white shadow hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">Τέτρις</a>
+          <span class="px-4 py-1.5 rounded-full font-semibold bg-slate-700 text-slate-400 cursor-not-allowed opacity-70" title="Έρχεται σύντομα">Φιδάκι <span class="text-xs">(σύντομα)</span></span>
+          <span class="px-4 py-1.5 rounded-full font-semibold bg-slate-700 text-slate-400 cursor-not-allowed opacity-70" title="Έρχεται σύντομα">2048 <span class="text-xs">(σύντομα)</span></span>
+        </nav>
+        <button id="fullscreenBtn" class="ml-2 p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition" title="Πλήρης οθόνη" aria-label="Πλήρης οθόνη">
+          <span id="fullscreenText">Πλήρης οθόνη</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -47,7 +59,9 @@
           </div>
           <div class="grid sm:grid-cols-[auto_180px] gap-4 items-start">
             <div class="flex items-center justify-center bg-slate-900 rounded-xl p-3">
-              <canvas id="game" width="240" height="480" class="rounded-lg shadow-inner"></canvas>
+              <div class="border-4 border-indigo-500 rounded-lg bg-slate-950">
+                <canvas id="game" width="240" height="480" class="rounded-md shadow-inner bg-slate-950"></canvas>
+              </div>
             </div>
             <div class="space-y-3">
               <div class="bg-slate-900 rounded-xl p-3"><div class="text-xs uppercase text-slate-400">Σκορ</div><div id="score" class="text-2xl font-mono">0</div></div>
@@ -115,6 +129,44 @@
   </footer>
 
   <script>
+  // Disable page scrolling
+  document.body.style.overflow = 'hidden';
+  // Fullscreen toggle logic
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+  const fullscreenIcon = document.getElementById('fullscreenIcon');
+  function isFullscreen() {
+    return document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+  }
+  function updateFullscreenIcon() {
+    const text = document.getElementById('fullscreenText');
+    if (isFullscreen()) {
+      text.textContent = 'Έξοδος πλήρους οθόνης';
+      fullscreenBtn.title = 'Έξοδος πλήρους οθόνης';
+    } else {
+      text.textContent = 'Πλήρης οθόνη';
+      fullscreenBtn.title = 'Πλήρης οθόνη';
+    }
+  }
+  fullscreenBtn.addEventListener('click', () => {
+    if (!isFullscreen()) {
+      const docEl = document.documentElement;
+      if (docEl.requestFullscreen) docEl.requestFullscreen();
+      else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
+      else if (docEl.mozRequestFullScreen) docEl.mozRequestFullScreen();
+      else if (docEl.msRequestFullscreen) docEl.msRequestFullscreen();
+    } else {
+      if (document.exitFullscreen) document.exitFullscreen();
+      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+      else if (document.msExitFullscreen) document.msExitFullscreen();
+    }
+  });
+  document.addEventListener('fullscreenchange', updateFullscreenIcon);
+  document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
+  document.addEventListener('mozfullscreenchange', updateFullscreenIcon);
+  document.addEventListener('MSFullscreenChange', updateFullscreenIcon);
+  // Initialize icon
+  updateFullscreenIcon();
   const $ = s => document.querySelector(s);
   const ROW=20, COL=10, tile=24;
   const colors={I:'#67e8f9',J:'#93c5fd',L:'#fbbf24',O:'#fde047',S:'#86efac',T:'#c084fc',Z:'#fca5a5'};
