@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Παίξε Τέτρις Online Δωρεάν | Freegames.gr</title>
+  <meta name="description" content="Παίξε Τέτρις online δωρεάν χωρίς εγκατάσταση. Πίνακας κατάταξης, σκορ, επίπεδα, λειτουργεί σε κινητό και desktop. Freegames.gr – Δωρεάν παιχνίδια online." />
+  <link rel="icon" href="./favicon.ico" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta property="og:title" content="Παίξε Τέτρις Online Δωρεάν" />
+  <meta property="og:description" content="Κλασικό Τέτρις με πίνακα κατάταξης. Παίξε τώρα δωρεάν στο Freegames.gr" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://freegames.gr/tetris" />
+  <meta property="og:image" content="./og-tetris.jpg" />
+  <meta name="theme-color" content="#111827" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Μπορώ να παίξω Τέτρις online δωρεάν?", "acceptedAnswer": { "@type": "Answer", "text": "Ναι. Το Freegames.gr προσφέρει κλασικό Τέτρις δωρεάν, χωρίς εγγραφή και χωρίς εγκατάσταση, σε κινητά και υπολογιστές." } },
+      { "@type": "Question", "name": "Πώς κρατάτε τον πίνακα κατάταξης;", "acceptedAnswer": { "@type": "Answer", "text": "Τα σκορ αποθηκεύονται τοπικά στη συσκευή σας (localStorage)." } },
+      { "@type": "Question", "name": "Υποστηρίζεται χειρισμός από κινητό;", "acceptedAnswer": { "@type": "Answer", "text": "Ναι, υπάρχουν χειριστήρια αφής. Σε desktop χρησιμοποιήστε τα βέλη, Space (περιστροφή) και Shift/↑ (γρήγορη πτώση)." } }
+    ]
+  }
+  </script>
+  <style>canvas{image-rendering:pixelated}.btn{user-select:none}</style>
+</head>
+<body class="min-h-screen bg-slate-900 text-slate-100">
+  <header class="border-b border-slate-800/60 sticky top-0 z-20 backdrop-blur bg-slate-900/80">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2"><span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/20">🎮</span><span class="font-bold text-lg">Freegames<span class="text-indigo-400">.gr</span></span></div>
+      <nav class="hidden sm:flex items-center gap-4 text-sm text-slate-300"><span class="text-white">Τέτρις</span><span class="opacity-60">Φιδάκι (σύντομα)</span><span class="opacity-60">2048 (σύντομα)</span></nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8 grid lg:grid-cols-3 gap-6">
+    <section class="lg:col-span-2">
+      <div class="grid gap-4">
+        <div class="bg-slate-800/60 rounded-2xl p-4 shadow-xl ring-1 ring-black/5">
+          <div class="flex items-center justify-between mb-3">
+            <h1 class="text-xl sm:text-2xl font-bold">Παίξε Τέτρις Online Δωρεάν</h1>
+            <div class="flex gap-2">
+              <button id="btnPause" class="px-3 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-sm btn">Παύση</button>
+              <button id="btnRestart" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-sm btn">Επανεκκίνηση</button>
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-[auto_180px] gap-4 items-start">
+            <div class="flex items-center justify-center bg-slate-900 rounded-xl p-3">
+              <canvas id="game" width="240" height="480" class="rounded-lg shadow-inner"></canvas>
+            </div>
+            <div class="space-y-3">
+              <div class="bg-slate-900 rounded-xl p-3"><div class="text-xs uppercase text-slate-400">Σκορ</div><div id="score" class="text-2xl font-mono">0</div></div>
+              <div class="bg-slate-900 rounded-xl p-3"><div class="text-xs uppercase text-slate-400">Γραμμές</div><div id="lines" class="text-2xl font-mono">0</div></div>
+              <div class="bg-slate-900 rounded-xl p-3"><div class="text-xs uppercase text-slate-400">Επίπεδο</div><div id="level" class="text-2xl font-mono">1</div></div>
+              <div class="bg-slate-900 rounded-xl p-3"><div class="text-xs uppercase text-slate-400 mb-1">Επόμενο</div><canvas id="next" width="80" height="80" class="rounded"></canvas></div>
+            </div>
+          </div>
+          <div class="mt-4 grid grid-cols-5 gap-2 sm:hidden">
+            <button class="tc btn px-3 py-2 rounded-xl bg-slate-800 active:bg-slate-700" data-act="left">←</button>
+            <button class="tc btn px-3 py-2 rounded-xl bg-slate-800 active:bg-slate-700" data-act="rotate">⤿</button>
+            <button class="tc btn px-3 py-2 rounded-xl bg-slate-800 active:bg-slate-700" data-act="right">→</button>
+            <button class="tc btn px-3 py-2 rounded-xl bg-slate-800 active:bg-slate-700" data-act="down">↓</button>
+            <button class="tc btn px-3 py-2 rounded-xl bg-slate-800 active:bg-slate-700" data-act="drop">⤓</button>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 rounded-2xl p-4 shadow-xl ring-1 ring-black/5">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-lg font-semibold">Πίνακας Κατάταξης (Τοπικά)</h2>
+            <div class="flex items-center gap-2">
+              <input id="playerName" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-sm" placeholder="Ψευδώνυμο" maxlength="20" />
+              <button id="btnSave" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-sm btn">Αποθήκευση σκορ</button>
+            </div>
+          </div>
+          <ol id="lb" class="grid gap-1 text-sm"></ol>
+          <p class="mt-2 text-xs text-slate-400">Τα σκορ αποθηκεύονται <strong>τοπικά</strong> στη συσκευή σας (localStorage).</p>
+        </div>
+      </div>
+    </section>
+
+    <aside class="space-y-4">
+      <div class="bg-slate-800/60 rounded-2xl p-4 shadow-xl ring-1 ring-black/5">
+        <h3 class="text-lg font-semibold mb-2">Πώς παίζεται το Τέτρις</h3>
+        <p class="text-sm text-slate-300 leading-6">Στόχος είναι να τοποθετείτε τα τουβλάκια ώστε να δημιουργείτε πλήρεις οριζόντιες γραμμές. Με κάθε επίπεδο, η ταχύτητα αυξάνεται.</p>
+        <ul class="mt-2 list-disc list-inside text-sm text-slate-300">
+          <li><span class="font-medium">Βελάκια</span>: Αριστερά/Δεξιά/Κάτω</li>
+          <li><span class="font-medium">Space</span>: Περιστροφή</li>
+          <li><span class="font-medium">Shift/Up</span>: Άμεση πτώση</li>
+          <li><span class="font-medium">P</span>: Παύση</li>
+        </ul>
+      </div>
+      <div class="bg-slate-800/60 rounded-2xl p-4 shadow-xl ring-1 ring-black/5">
+        <h3 class="text-lg font-semibold mb-2">Συχνές Ερωτήσεις</h3>
+        <details class="mb-2"><summary class="cursor-pointer">Είναι δωρεάν;</summary><p class="text-sm text-slate-300 mt-1">Ναι, παίζεται δωρεάν χωρίς εγκατάσταση.</p></details>
+        <details class="mb-2"><summary class="cursor-pointer">Δουλεύει σε κινητό;</summary><p class="text-sm text-slate-300 mt-1">Ναι, υπάρχει υποστήριξη αφής.</p></details>
+        <details class="mb-2"><summary class="cursor-pointer">Πώς λειτουργεί ο πίνακας κατάταξης;</summary><p class="text-sm text-slate-300 mt-1">Τοπικά στη συσκευή (localStorage).</p></details>
+      </div>
+      <div class="bg-slate-800/60 rounded-2xl p-4 shadow-xl ring-1 ring-black/5">
+        <h3 class="text-lg font-semibold mb-2">SEO σημειώσεις</h3>
+        <p class="text-xs text-slate-400">Κρατήστε αυτό το κείμενο στο DOM — λέξεις-κλειδιά: «Τέτρις online δωρεάν», «παίξε τέτρις», «κλασικά παιχνίδια online».</p>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="border-t border-slate-800/60">
+    <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div>© <span id="year"></span> Freegames.gr • Δωρεάν Παιχνίδια Online</div>
+      <div class="flex items-center gap-3">
+        <button id="shareBtn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 btn">Κοινοποίηση</button>
+        <a class="hover:text-white" href="#">Όροι</a>
+        <a class="hover:text-white" href="#">Επικοινωνία</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  const $ = s => document.querySelector(s);
+  const ROW=20, COL=10, tile=24;
+  const colors={I:'#67e8f9',J:'#93c5fd',L:'#fbbf24',O:'#fde047',S:'#86efac',T:'#c084fc',Z:'#fca5a5'};
+  const SHAPES={I:[[1,1,1,1]],J:[[1,0,0],[1,1,1]],L:[[0,0,1],[1,1,1]],O:[[1,1],[1,1]],S:[[0,1,1],[1,1,0]],T:[[0,1,0],[1,1,1]],Z:[[1,1,0],[0,1,1]]};
+  const PIECES=Object.keys(SHAPES);
+  const state={grid:Array.from({length:ROW},()=>Array(COL).fill(null)),cur:null,next:PIECES[Math.floor(Math.random()*PIECES.length)],x:3,y:0,score:0,lines:0,level:1,dropInterval:800,lastTime:0,paused:false,over:false};
+  const cvs=$('#game'),ctx=cvs.getContext('2d'); const nxt=$('#next'),nctx=nxt.getContext('2d');
+
+  function shape(t){return SHAPES[t]}
+  function rotate(m){const N=m.length,M=m[0].length,r=Array.from({length:M},()=>Array(N).fill(0));for(let y=0;y<N;y++)for(let x=0;x<M;x++)r[x][N-1-y]=m[y][x];return r}
+  function collide(dx,dy,sh){for(let y=0;y<sh.length;y++){for(let x=0;x<sh[0].length;x++){if(!sh[y][x])continue;const nx=state.x+x+dx,ny=state.y+y+dy;if(nx<0||nx>=COL||ny>=ROW)return true;if(ny>=0&&state.grid[ny][nx])return true}}return false}
+  function merge(){const sh=shape(state.cur);for(let y=0;y<sh.length;y++){for(let x=0;x<sh[0].length;x++){if(sh[y][x]){const ny=state.y+y,nx=state.x+x;if(ny>=0)state.grid[ny][nx]=state.cur}}}}
+  function clearLines(){let c=0;outer:for(let y=ROW-1;y>=0;y--){for(let x=0;x<COL;x++){if(!state.grid[y][x])continue outer}state.grid.splice(y,1);state.grid.unshift(Array(COL).fill(null));c++;y++}if(c){state.lines+=c;state.score+=[0,40,100,300,1200][c]*state.level;if(state.lines>=state.level*10){state.level++;state.dropInterval=Math.max(120,state.dropInterval-80)}ui()}}
+  function drawCell(x,y,t){ctx.fillStyle=colors[t]||'#94a3b8';ctx.fillRect(x*tile,y*tile,tile-1,tile-1)}
+  function draw(){ctx.fillStyle='#0f172a';ctx.fillRect(0,0,cvs.width,cvs.height);for(let y=0;y<ROW;y++){for(let x=0;x<COL;x++){const t=state.grid[y][x];if(t)drawCell(x,y,t)}}if(!state.over){const sh=shape(state.cur);for(let y=0;y<sh.length;y++){for(let x=0;x<sh[0].length;x++){if(sh[y][x])drawCell(state.x+x,state.y+y,state.cur)}}}else{ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,cvs.width,cvs.height);ctx.fillStyle='#fff';ctx.font='bold 20px system-ui';ctx.textAlign='center';ctx.fillText('Game Over',cvs.width/2,cvs.height/2-10);ctx.font='14px system-ui';ctx.fillText('Πάτησε Επανεκκίνηση',cvs.width/2,cvs.height/2+12)}}
+  function drawNext(){nctx.fillStyle='#0b1220';nctx.fillRect(0,0,nxt.width,nxt.height);const sh=shape(state.next);const ox=Math.floor((4-sh[0].length)/2),oy=Math.floor((4-sh.length)/2);for(let y=0;y<sh.length;y++){for(let x=0;x<sh[0].length;x++){if(sh[y][x]){nctx.fillStyle=colors[state.next];nctx.fillRect((ox+x)*20,(oy+y)*20,19,19)}}}}
+  function ui(){$('#score').textContent=state.score;$('#lines').textContent=state.lines;$('#level').textContent=state.level}
+  function newPiece(){state.cur=state.next;state.next=PIECES[Math.floor(Math.random()*PIECES.length)];state.x=3;state.y=0;if(collide(0,0,shape(state.cur))){state.over=true;saveLocalScore()}drawNext()}
+  function hardDrop(){let dy=0;while(!collide(0,dy+1,shape(state.cur)))dy++;state.y+=dy;step()}
+  function step(time=0){if(state.paused||state.over){draw();return}const d=time-state.lastTime;if(d>state.dropInterval){if(!collide(0,1,shape(state.cur)))state.y++;else{merge();clearLines();newPiece()}state.lastTime=time}draw();requestAnimationFrame(step)}
+  function reset(){state.grid=Array.from({length:ROW},()=>Array(COL).fill(null));state.score=0;state.lines=0;state.level=1;state.dropInterval=800;state.over=false;state.paused=false;ui();newPiece();draw()}
+  document.addEventListener('keydown',e=>{if(state.over)return;if(e.key==='ArrowLeft'&&!collide(-1,0,shape(state.cur)))state.x--;else if(e.key==='ArrowRight'&&!collide(1,0,shape(state.cur)))state.x++;else if(e.key==='ArrowDown'&&!collide(0,1,shape(state.cur)))state.y++;else if(e.key===' '||e.key==='Spacebar'){const s=shape(state.cur);const r=rotate(s);if(!collide(0,0,r))SHAPES[state.cur]=r}else if(e.key==='Shift'||e.key==='ArrowUp'){hardDrop()}else if(e.key.toLowerCase()==='p'){state.paused=!state.paused}draw()})
+  document.querySelectorAll('.tc.btn').forEach(b=>{b.addEventListener('click',()=>{const a=b.dataset.act;if(a==='left'&&!collide(-1,0,shape(state.cur)))state.x--;if(a==='right'&&!collide(1,0,shape(state.cur)))state.x++;if(a==='down'&&!collide(0,1,shape(state.cur)))state.y++;if(a==='rotate'){const s=shape(state.cur);const r=rotate(s);if(!collide(0,0,r))SHAPES[state.cur]=r}if(a==='drop')hardDrop();draw()})})
+  $('#btnPause').onclick=()=>{state.paused=!state.paused};
+  $('#btnRestart').onclick=()=>{reset()};
+  const LB_KEY='fg_tetris_lb_v1';
+  function getLB(){try{return JSON.parse(localStorage.getItem(LB_KEY))||[]}catch{return[]}}
+  function setLB(a){localStorage.setItem(LB_KEY,JSON.stringify(a.slice(0,10)))}
+  function renderLB(){const lb=getLB();$('#lb').innerHTML=lb.map((r,i)=>`<li class="flex justify-between bg-slate-900/70 px-3 py-2 rounded-lg"><span>${i+1}. ${r.name}</span><span class="font-mono">${r.score}</span></li>`).join('')}
+  function saveLocalScore(){const name=($('#playerName').value||'Παίκτης');const lb=getLB();lb.push({name,score:state.score,at:Date.now()});lb.sort((a,b)=>b.score-a.score);setLB(lb);renderLB()}
+  $('#btnSave').onclick=saveLocalScore;
+  $('#shareBtn').onclick=async()=>{const text=`Έκανα ${state.score} στο Τέτρις! Μπορείς καλύτερα;`;const url=location.href;if(navigator.share){try{await navigator.share({title:document.title,text,url})}catch(e){}}else{navigator.clipboard.writeText(url);alert('Ο σύνδεσμος αντιγράφηκε!')}}
+  reset();requestAnimationFrame(step);renderLB();$('#year').textContent=new Date().getFullYear();
+  </script>
+
+  <noscript>Παίξε Τέτρις online δωρεάν στο Freegames.gr. Κλασικό παιχνίδι, χωρίς εγκατάσταση, λειτουργεί και σε κινητά.</noscript>
+</body>
+</html>
